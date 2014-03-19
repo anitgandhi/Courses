@@ -1,3 +1,5 @@
+<?php
+
 function check_input($value)
 {
     // Stripslashes
@@ -14,11 +16,12 @@ $temp = array_filter($_POST);
 if (empty($temp))
     die('Error: No Data to Insert.');
 
-$server = mysql_connect("127.0.0.1","username", "password");
+$server = mysqli_connect("server","username", "pasword", "database");
+
 // Check connection
-if (!server)
+if (!$server)
 {
-	echo "Failed to connect to MySQL: " . mysql_connect_error();
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
 // Set up variables from POST data
@@ -122,11 +125,12 @@ $columns = "name, email, uin, netid, major, member_id, hw_beg, hw_int, hw_adv, h
 
 $values = "'$user_name', '$email', '$uin', '$netid', '$major', '$member_id', '$hw_beg', '$hw_int', '$hw_adv', '$hw_other', '$sw_html', '$sw_sql', '$sw_js', '$sw_php', '$sw_c', '$sw_java', '$sw_ruby', '$sw_x86', '$sw_ios', '$sw_android', '$sw_matlab', '$sw_csharp', '$sw_django', '$sw_python', '$sw_perl', '$sw_opencv', '$sw_opengl', '$sw_opencl', '$sw_cuda', '$sw_osdev', '$sw_ds', '$sw_es', '$sw_sec', '$sw_other'";
 
-$query = "INSERT INTO eceieee_skillset.skillset_ieee  (" . $columns . ") " . "VALUES (" . $values . ")";
+$query = "INSERT INTO skillset_database  (" . $columns . ") " . "VALUES (" . $values . ")";
 
-if (!mysql_query($query))
-	die('Error: ' . mysql_error($server));
+mysqli_query($server, $query);
 
-mysql_close($server);
+mysqli_close($server);
 
 echo "<h3>Your submission has been recorded. Thank you!</h3>";
+
+?>

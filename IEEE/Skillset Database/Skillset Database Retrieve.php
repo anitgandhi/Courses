@@ -1,16 +1,17 @@
+<?php
+
 // if software is a "yes", return 2 3 and 4
 function insert_sw($value, &$q)
 {
-	//global $query;
 	if ($_POST[$value] == 2)
 		$q .= " AND ($value=2 OR $value=3 OR $value=4)";
 }
 
 function insert_hw($value, &$q)
 {
-	//global $query;	
+	$temp = substr($value, 0, -2);
 	if (!empty($_POST[$value]))
-		$q .= " AND ($value=" . $_POST[$value] . ")";
+		$q .= " AND ($temp LIKE '%" . $_POST[$value] . "%')";
 }
 
 function changeMajor($value)
@@ -28,14 +29,15 @@ $temp = array_filter($_POST);
 if (empty($temp))
     die('Error: No Data to Retrieve.');
 
-$server = mysql_connect("127.0.0.1","username", "password");
+$server = mysqli_connect("server","username", "pasword", "database");
+
 // Check connection
-if (!server)
+if (!$server)
 {
-	echo "Failed to connect to MySQL: " . mysql_connect_error();
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-$query = "SELECT * FROM eceieee_skillset.skillset_ieee WHERE major ";
+$query = "SELECT * FROM skillset_database WHERE major ";
 
 if (!empty($_POST['major']))
 	$query .= "='" . $_POST['major'] . "'";
@@ -88,32 +90,28 @@ insert_sw('sw_es', $query);
 insert_sw('sw_sec', $query);
 
 // Run query
-if (! $data = mysql_query($query))
+if (! $data = mysqli_query($server, $query))
 {
-	die('Error: ' . mysql_error($server));
+	die('Error: ' . mysqli_error($server));
 }
 
 // If no results found
-if (mysql_num_rows($data)==0)
+if (mysqli_num_rows($data)==0)
 	echo "<h4>No results found.</h4>";
 
 // output all the data from each entry in query results
-while($row = mysql_fetch_array($data)) 
+while($row = mysqli_fetch_array($data)) 
 {
 	// User information
-	echo "<h4>Name: " . $row['name'] . "</h4>";
-	echo "<h4>Major: " . changeMajor($row['major']) . "</h4>";
-	echo "<h4>Email: " . $row['email'] . "</h4>";
+	echo "<b>Name: " . $row['name'] . "</b><br/>";
+	echo "<b>Major: " . changeMajor($row['major']) . "</b><br/>";
+	echo "<b>Email: " . $row['email'] . "</b><br/>";
 	
 	// Hardware information
-	echo "<h3>Hardware Skills</h3>";
+	echo "<br/><h5>Hardware Skills</h5>";
 	
 	// Remove single quotes at beginning and end, and format 
 	//nicely to make sure empty entries don't come up
-	
-	/*$hw_beg = implode(", ", array_filter(explode(",", $row['hw_beg'])));
-	$hw_int = implode(", ", array_filter(explode(",", $row['hw_int'])));
-	$hw_adv = implode(", ", array_filter(explode(",", $row['hw_adv'])));*/
 		
 	echo "Beginner: " . implode(", ", array_filter(explode(",", $row['hw_beg']))) . "<br/>";
 	echo "Intermediate: " . implode(", ", array_filter(explode(",", $row['hw_int']))) . "<br/>";
@@ -121,7 +119,7 @@ while($row = mysql_fetch_array($data))
 	echo "Other: " . implode(", ", array_filter(explode(",", $row['hw_other']))) . "<br/>";
 	
 	// Software information
-	echo "<h3>Software Skills</h3>";
+	echo "<br/><h5>Software Skills</h5>";
 	
 	// Sort languages by expertise level
 	// Get 3 arrays for each level containing the languages they know at that level
@@ -182,10 +180,9 @@ while($row = mysql_fetch_array($data))
 	echo "Concepts: " . $sw_con_str . "<br/>";
 	echo "Other: " . implode(", ", array_filter(explode(",", $row['sw_other'])));
 	
-	// Concepts
-	//, );
-	
 	echo "<hr>";
 }
 
-mysql_close($server);
+mysqli_close($server);
+
+?>
