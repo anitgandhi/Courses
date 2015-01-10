@@ -1,0 +1,1 @@
+These are just some random projects that I've worked on over the years. I'm using this folder more for showing old, random code rather than active development.
