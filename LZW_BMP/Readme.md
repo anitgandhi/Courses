@@ -4,7 +4,7 @@ While this algorithm is already used in things like text files and GIFs, I origi
 
 A quick summary of what I did and the results follow, but the full results can be seen in the Report.pdf.
 
-Note: this was compiled and tested on Windows using MinGW. So, this can be compiled on Linux as well without issue, using gcc. 
+Note: this was compiled and tested on Windows using MinGW. So, this can be compiled on Linux as well without issue, using gcc; I don't believe I'm using any platform specific libraries. 
 
 This project consists of a few different building blocks:
 * LZW_Text.cpp is for text compression. It takes a .txt file (or any other file with just ASCII text), and outputs a compressed binary file.
